@@ -29,5 +29,5 @@ Puis lancez le serveur de développement :
 npm run dev
 ```
 
-Ouvrez [http://localhost:3000] dans votre navigateur pour voir le résultat.
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur pour voir le résultat.
 

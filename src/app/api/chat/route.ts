@@ -1,6 +1,6 @@
 import ollama from 'ollama';
 
-const model = "gemma3n:e4b"
+const model = "qwen3:4b";
 
 export async function POST(request: Request) {
     try {
