@@ -1,5 +1,7 @@
 import ollama from 'ollama';
 
+const model = "gemma3n:e4b"
+
 export async function POST(request: Request) {
     try {
         const { messages } = await request.json();
@@ -15,7 +17,7 @@ export async function POST(request: Request) {
             async start(controller) {
                 try {
                     const response = await ollama.chat({
-                        model: process.env.AI_MODEL as string,
+                        model: process.env.AI_MODEL || model ,
                         messages: ollamaMessages,
                         stream: true,
                     });
