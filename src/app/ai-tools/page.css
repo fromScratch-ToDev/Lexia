@@ -1,0 +1,4 @@
+
+.chat-bar:has(.chat-bar-textarea:focus) {
+    border: 1px solid gray;
+}

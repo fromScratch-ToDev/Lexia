@@ -1,33 +1,33 @@
-# Assistant IA Landing Page
+# Project Name
 
-## Prérequis
 
-Avant de commencer, assurez-vous d'avoir installé :
+### Lancement rapide
 
-- [Ollama](https://ollama.com/) sur votre système
-- Un modèle LLM téléchargé via Ollama (par exemple : `ollama pull gemma3n:e4b`)
-
-Pour vérifier qu'Ollama fonctionne correctement :
+Pour démarrer l'ensemble du projet, exécutez le script de lancement à la racine :
 
 ```bash
-ollama list
+./start-all.sh
 ```
 
-Cette commande doit afficher les modèles disponibles sur votre machine.
- 
-## Installation et démarrage
+### Instructions détaillées
 
-Après avoir cloné le projet, installez les dépendances :
+1. **Clonez le projet** (si ce n'est pas déjà fait) :
+   ```bash
+   git clone <url-du-repo>
+   cd <nom-du-projet>
+   ```
 
-```bash
-npm install
-```
+2. **Rendez le script exécutable** (première fois uniquement) :
+   ```bash
+   chmod +x start-all.sh
+   ```
 
-Puis lancez le serveur de développement :
+3. **Lancez le script** :
+   ```bash
+   ./start-all.sh
+   ```
 
-```bash
-npm run dev
-```
 
-Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur pour voir le résultat.
+### Arrêt du projet
 
+Pour arrêter tous les processus lancés par le script, utilisez `Ctrl+C` dans le terminal.

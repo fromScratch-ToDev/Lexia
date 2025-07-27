@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getApiUrl, API_CONFIG } from '@/lib/api-config';
 
 interface UploadedFile {
     id: string;
@@ -58,7 +59,7 @@ export default function PDFUpload({
             const formData = new FormData();
             formData.append('pdf', file);
 
-            const response = await fetch('/api/pdf-extract', {
+            const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.PDF_EXTRACT), {
                 method: 'POST',
                 body: formData,
             });
@@ -178,16 +179,7 @@ export default function PDFUpload({
                     onChange={handleFileSelect}
                     className="hidden"
                 />
-                <button
-                    onClick={() => document.getElementById('fileInput')?.click()}
-                    disabled={isProcessingPDF}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Ajouter des fichiers PDF
-                </button>
+               
             </div>
         </div>
     );
