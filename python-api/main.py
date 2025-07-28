@@ -15,6 +15,8 @@ from dict import find_numbers_in_string
 # 0.  Configuration
 # ------------------------------------------------------------------
 
+is_load = False
+
 # Création de l'application FastAPI
 app = FastAPI(title="Assistant IA API", version="1.0.0")
 
@@ -170,6 +172,14 @@ async def pdf_extract_endpoint(pdf: UploadFile = File(...)):
         return await extract_pdf_text(pdf)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/load")
+async def load():
+    global is_load
+    if not is_load:
+        llm.invoke("Bonjour")
+        is_load = True
+    return {"message": "Chargement des ressources..."}
 
 @app.get("/health")
 async def health_check():

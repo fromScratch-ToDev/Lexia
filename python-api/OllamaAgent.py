@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv("../.env")
 
-global user_messages  # Liste pour stocker les messages de l'utilisateur
+user_messages = []  # Liste pour stocker les messages de l'utilisateur # Pas utilisé pour actuellement
 
 MAX_TOKENS = 4096  # Nombre maximum de tokens pour le modèle
 MAX_ITERATIONS = 3  # Nombre maximum d'itérations pour la conversation
@@ -43,10 +43,11 @@ def get_specific_civil_code_article(article_number: str) -> str:
     return get_article(article_number)
 
 
+# Pas utilisé actuellement
 @tool
 def get_previous_user_message() -> List[str]:
     """
-    Permet d'avoir plus de contexte sur la conversation en cours.
+    A utiliser lorsque tu ne comprends pas la question de l'utilisateur pour voir ce qu'il a dit précédemment.
     Récupère le dernier message de l'utilisateur.
         return: Dernier message de l'utilisateur
     """
@@ -60,7 +61,7 @@ def get_previous_user_message() -> List[str]:
 @tool
 def get_context_on_french_civil_code(query: str) -> str:
     """
-    Permet d'intéroger le code civil français et de récupérer du contexte pertinent à partir d'une base de données vectorielle.
+    Permet de faire une recherche à l'intérieur du code civil français.
         param query: La requête utilisateur
         return: Contexte issus du code civil français
     """
@@ -117,12 +118,13 @@ class OllamaAgent:
         processed_messages = []
         user_messages = [] # Réinitialiser la liste des messages de l'utilisateur
 
-        # Récupérer le dernier message de l'utilisateur
-        for message in reversed(messages):
-            if message["role"] == "user":
-                processed_messages.append(message)
+        # Limiter le nombre de messages à 10 derniers messages pour éviter les surcharges
+        for message_num in range(len(messages)-1, len(messages) - 11, -1):
+            if message_num < 0:
                 break
-        
+            else :
+                processed_messages.insert(0, messages[message_num])
+
         # Récupérer tous les messages précédents de l'utilisateur
         for message in reversed(messages):
             if message["role"] == "user":
@@ -130,7 +132,7 @@ class OllamaAgent:
 
 
         # Créer un agent React avec les outils nécessaires
-        agent = self._llm.bind_tools([get_context_on_french_civil_code, get_previous_user_message, get_specific_civil_code_article])
+        agent = self._llm.bind_tools([get_context_on_french_civil_code, get_specific_civil_code_article])
         processed_messages.insert(0, system_message)
         processed_messages = convert_prompt_to_langchain_messages(processed_messages)
 
@@ -158,7 +160,7 @@ class OllamaAgent:
                         content = str(get_specific_civil_code_article.invoke(tool_call["args"]))
                         tools_results.append(ToolMessage(content=content, tool_call_id=tool_call["id"]))
 
-                # Ajouter les résultats des outils aux messages
+                # Ajouter les résultats des outils aux processed_messages
                 processed_messages.extend(tools_results)
                 continue  # Retourner au début de la boucle pour traiter la réponse suivante
             

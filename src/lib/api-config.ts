@@ -2,6 +2,7 @@
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000',
   ENDPOINTS: {
+    LOAD : '/api/load',
     AGENT: '/api/agent',
     ASK_CODE_CIVIL: '/api/ask-code-civil',
     RESUME: '/api/resume',

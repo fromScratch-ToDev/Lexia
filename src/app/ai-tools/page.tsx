@@ -1,7 +1,7 @@
 'use client';
 
 import './page.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { marked } from 'marked';
 import PDFUpload, { UploadedFile } from './PDFUpload';
 import { getApiUrl, API_CONFIG, checkApiHealth } from '@/lib/api-config';
@@ -28,6 +28,20 @@ export default function AIToolsPage() {
     const [apiHealthy, setApiHealthy] = useState<boolean | null>(null);
     const [selectedRoute, setSelectedRoute] = useState<RouteType>('ask');
     const [copiedMessages, setCopiedMessages] = useState<Set<number>>(new Set());
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Fonction pour faire défiler vers le bas
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Scroll automatique quand les messages changent
+    useEffect(() => {
+        const { messages } = getMessagesAndSetter(selectedRoute);
+        if (messages.length > 0) {
+            scrollToBottom();
+        }
+    }, [askMessages, agentMessages, resumeMessages, selectedRoute]);
 
     // Vérifier la santé de l'API au démarrage
     useEffect(() => {
@@ -41,6 +55,25 @@ export default function AIToolsPage() {
         const interval = setInterval(checkHealth, 30000);
         
         return () => clearInterval(interval);
+    }, []);
+
+    // Charger le model ollama
+    useEffect(() => {
+        const loadModel = async () => {
+            try {
+                const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.LOAD), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+            } catch (error) {
+                console.error('Error loading model:', error);
+            }
+        };
+
+        loadModel();
+
     }, []);
 
     // Fonction pour obtenir les messages et setter selon la route
@@ -312,7 +345,7 @@ export default function AIToolsPage() {
                     </div>
 
                     {/* Messages */}
-                    <div className="flex-1  p-4 overflow-y-auto space-y-4">
+                    <div className="flex-1  p-4 overflow-y-auto space-y-4 ">
                         {(() => {
                             const { messages } = getMessagesAndSetter(selectedRoute);
                             return messages.length === 0 ? (
@@ -394,9 +427,10 @@ export default function AIToolsPage() {
                                 ))
                             );
                         })()}
+                        <div ref={messagesEndRef} />
                         {isLoading && (
                             <div className="flex justify-start">
-                                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">
+                                <div className="text-gray-800 px-4 py-2 rounded-lg">
                                     <div className="flex space-x-1">
                                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
